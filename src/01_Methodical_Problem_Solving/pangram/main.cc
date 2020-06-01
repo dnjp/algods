@@ -5,7 +5,7 @@
  *   function which determines if a given string is a pangram.
  *
  * The Unknown:
- *   Whether or not the string is a pangram
+ *   Whether or not the string contains all letters of the alphabet
  *
  * The Data:
  *   The given string
@@ -14,19 +14,11 @@
  *   The string is a pangram if every letter of the alphabet is present
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <stdbool.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include <string.h>
+#include <unordered_set>
 
-typedef struct {
-	char *word;
-	bool should_pass;
-} test_case;
-
-const char *ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 bool contains(char *word, char c);
 bool is_alphabetic(char c);
 
@@ -36,8 +28,9 @@ bool is_alphabetic(char c);
  */
 bool is_pangram_a(char *word)
 {
-	for (int i = 0; i < sizeof(ALPHABET); i++) {
-		if (!contains(word, ALPHABET[i])) {
+	const char *alphabet = "abcdefghijklmnopqrstuvwxyz";
+	for (int i = 0; i < sizeof(alphabet); i++) {
+		if (!contains(word, alphabet[i])) {
 			return false;
 		}
 	}
@@ -46,26 +39,30 @@ bool is_pangram_a(char *word)
 
 /*
  * Solution B:
- *   Remove duplicate and nonalphabetic characters from the phrase and test
- *   if the length of the new phrase is 26
+ *   Create new string with distinct alphabetical characters from input string
+ *   and test if the length of the new string is 26
  */
 bool is_pangram_b(char *word)
 {
-	char alphabet[27] = "";
+	char distinct_alpha[27] = "";
 	for (int i = 0; i < strlen(word); i++) {
+		if (strlen(distinct_alpha) == 26) {
+			return true;
+		}
+
 		char ch = tolower(word[i]);
 		if (!is_alphabetic(ch)) {
 			continue;
 		}
 
 		int alpha_index = ch - 97;
-		bool should_insert = (int)alphabet[alpha_index] == 0;
+		bool should_insert = (int)distinct_alpha[alpha_index] == 0;
 
 		if (should_insert) {
-			alphabet[alpha_index] = ch;
+			distinct_alpha[alpha_index] = ch;
 		}
 	}
-	if (strlen(alphabet) == 26) {
+	if (strlen(distinct_alpha) == 26) {
 		return true;
 	}
 	return false;
@@ -73,11 +70,21 @@ bool is_pangram_b(char *word)
 
 /*
  * Solution C:
- *   Check for the existence of each letter in the word
+ *   Sort the string alphabetically and compare the first 26 letters to the alphabet
  */
 bool is_pangram_c(char *word)
 {
-	return false;
+	std::unordered_set<std::string> alpha_set({ "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
+						    "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" });
+
+	for (int i = 0; i < strlen(word); i++) {
+		char ch = tolower(word[i]);
+		if (is_alphabetic(ch)) {
+			std::string ch_str(1, ch);
+			alpha_set.erase(ch_str);
+		}
+	}
+	return alpha_set.empty();
 }
 
 bool contains(char *word, char c)
@@ -98,48 +105,45 @@ bool is_alphabetic(char c)
 	return false;
 }
 
-test_case *create_case(char *word, bool should_pass)
-{
-	test_case *tc = malloc(sizeof(test_case));
-	tc->word = strdup(word);
-	tc->should_pass = should_pass;
-	return tc;
-}
+class TestCase {
+    public:
+	TestCase(const char *w, bool sp)
+	{
+		// const char *input = w.c_str();
+		word = strdup(w);
+		should_pass = sp;
+	}
+	char *word;
+	bool should_pass;
+};
 
-void free_case(test_case *tc)
-{
-	free(tc->word);
-	free(tc);
-}
-
-void print_result(char *version, char *word, bool passes, bool should_pass)
+void print_result(const char *ver, char *word, bool passes, bool should_pass)
 {
 	if (passes == should_pass) {
-		printf("%s:\t%s => passed\n", version, word);
+		printf("%s:\t%s => passed\n", ver, word);
 	} else {
-		printf("%s:\t%s => failed\n", version, word);
+		printf("%s:\t%s => failed\n", ver, word);
 	}
 }
 
 void run_tests()
 {
-	test_case *cases[10] = {
+	TestCase cases[11] = {
 
 		/* true cases */
-		create_case("Two driven jocks help fax my big quiz", true),
-		create_case("Pack my box with five dozen liquor jugs", true),
-		create_case("The five boxing wizards jump quickly", true),
-		create_case("Bright vixens jump; dozy fowl quack", true),
-		create_case("Jackdaws love my big sphinx of quartz", true),
-		create_case("J.Q. Schwartz flung V.D. Pike my box", true),
+		TestCase("Two driven jocks help fax my big quiz", true),
+		TestCase("Pack my box with five dozen liquor jugs", true),
+		TestCase("The five boxing wizards jump quickly", true),
+		TestCase("Bright vixens jump; dozy fowl quack", true),
+		TestCase("Jackdaws love my big sphinx of quartz", true),
+		TestCase("J.Q. Schwartz flung V.D. Pike my box", true),
 
 		/* false cases */
-		create_case("hello", false),
-		create_case("You can only be afraid of what you think you know",
-			    false),
-		create_case("C is quirky, flawed, and an enormous success",
-			    false),
-		create_case("When in doubt, use brute force.", false),
+		TestCase("hello", false),
+		TestCase("You can only be afraid of what you think you know", false),
+		TestCase("C is quirky, flawed, and an enormous success", false),
+		TestCase("When in doubt, use brute force.", false),
+		TestCase("", false),
 	};
 
 	bool a_failed = false;
@@ -148,9 +152,9 @@ void run_tests()
 
 	int size = sizeof(cases) / sizeof(cases[0]);
 	for (int i = 0; i < size; i++) {
-		test_case *tc = cases[i];
-		char *word = tc->word;
-		bool should_pass = tc->should_pass;
+		TestCase tc = cases[i];
+		char *word = tc.word;
+		bool should_pass = tc.should_pass;
 
 		bool passes_a = is_pangram_a(word);
 		bool passes_b = is_pangram_b(word);
@@ -166,17 +170,14 @@ void run_tests()
 			c_failed = true;
 		}
 
+		printf("----------------------\n");
 		print_result("a", word, passes_a, should_pass);
 		print_result("b", word, passes_b, should_pass);
 		print_result("c", word, passes_c, should_pass);
-
-		free_case(cases[i]);
-
-		printf("----------------------\n");
 	}
 
 	printf("---------------------\n");
-	printf("     RESULTS\n");
+	printf("      RESULTS\n");
 	printf("---------------------\n");
 	printf(" Solution A: %s\n", a_failed == true ? "failed" : "passed");
 	printf(" Solution B: %s\n", b_failed == true ? "failed" : "passed");
