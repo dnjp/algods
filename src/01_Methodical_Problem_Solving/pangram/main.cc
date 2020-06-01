@@ -102,10 +102,7 @@ bool contains(char *phrase, char c)
 
 bool is_alphabetic(char c)
 {
-	if (c >= 'a' && c <= 'z') {
-		return true;
-	}
-	return false;
+	return c >= 'a' && c <= 'z';
 }
 
 class TestCase {
