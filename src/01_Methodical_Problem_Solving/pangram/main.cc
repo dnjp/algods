@@ -70,7 +70,9 @@ bool is_pangram_b(char *word)
 
 /*
  * Solution C:
- *   Sort the string alphabetically and compare the first 26 letters to the alphabet
+ *   Create a set containing the alphabet and remove each letter in the set when
+ *   encountered in the given string. If the set is empty at the end, the string
+ *   is a pangram.
  */
 bool is_pangram_c(char *word)
 {
