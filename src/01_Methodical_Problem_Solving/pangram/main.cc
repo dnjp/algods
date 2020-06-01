@@ -18,19 +18,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unordered_set>
+#include <vector>
 
-bool contains(char *word, char c);
+bool contains(char *phrase, char c);
 bool is_alphabetic(char c);
 
 /*
  * Solution A:
- *   Check for the existence of each letter of the alphabet in the phrase
+ *   The simplest solution: check for the existence of each letter of the alphabet in the phrase
  */
-bool is_pangram_a(char *word)
+bool is_pangram_a(char *phrase)
 {
 	const char *alphabet = "abcdefghijklmnopqrstuvwxyz";
 	for (int i = 0; i < sizeof(alphabet); i++) {
-		if (!contains(word, alphabet[i])) {
+		if (!contains(phrase, alphabet[i])) {
 			return false;
 		}
 	}
@@ -42,15 +43,15 @@ bool is_pangram_a(char *word)
  *   Create new string with distinct alphabetical characters from input string
  *   and test if the length of the new string is 26
  */
-bool is_pangram_b(char *word)
+bool is_pangram_b(char *phrase)
 {
 	char distinct_alpha[27] = "";
-	for (int i = 0; i < strlen(word); i++) {
+	for (int i = 0; i < strlen(phrase); i++) {
 		if (strlen(distinct_alpha) == 26) {
 			return true;
 		}
 
-		char ch = tolower(word[i]);
+		char ch = tolower(phrase[i]);
 		if (!is_alphabetic(ch)) {
 			continue;
 		}
@@ -74,13 +75,13 @@ bool is_pangram_b(char *word)
  *   encountered in the given string. If the set is empty at the end, the string
  *   is a pangram.
  */
-bool is_pangram_c(char *word)
+bool is_pangram_c(char *phrase)
 {
 	std::unordered_set<std::string> alpha_set({ "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
 						    "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" });
 
-	for (int i = 0; i < strlen(word); i++) {
-		char ch = tolower(word[i]);
+	for (int i = 0; i < strlen(phrase); i++) {
+		char ch = tolower(phrase[i]);
 		if (is_alphabetic(ch)) {
 			std::string ch_str(1, ch);
 			alpha_set.erase(ch_str);
@@ -89,10 +90,10 @@ bool is_pangram_c(char *word)
 	return alpha_set.empty();
 }
 
-bool contains(char *word, char c)
+bool contains(char *phrase, char c)
 {
-	for (int j = 0; j < strlen(word); j++) {
-		if (tolower(word[j]) == tolower(c)) {
+	for (int j = 0; j < strlen(phrase); j++) {
+		if (tolower(phrase[j]) == tolower(c)) {
 			return true;
 		}
 	}
@@ -109,29 +110,80 @@ bool is_alphabetic(char c)
 
 class TestCase {
     public:
-	TestCase(const char *w, bool sp)
+	TestCase(const char *input, bool sp)
 	{
-		// const char *input = w.c_str();
-		word = strdup(w);
+		phrase = strdup(input);
 		should_pass = sp;
 	}
-	char *word;
+	char *phrase;
 	bool should_pass;
 };
 
-void print_result(const char *ver, char *word, bool passes, bool should_pass)
+class Test {
+    public:
+	Test(std::vector<TestCase> c)
+	{
+		cases = c;
+	}
+	void Run();
+
+    private:
+	void PrintResult(const char *ver, char *phrase, bool passes, bool should_pass);
+
+	std::vector<TestCase> cases;
+};
+
+void Test::PrintResult(const char *ver, char *phrase, bool passes, bool should_pass)
 {
 	if (passes == should_pass) {
-		printf("%s:\t%s => passed\n", ver, word);
+		printf("%s:\t%s => passed\n", ver, phrase);
 	} else {
-		printf("%s:\t%s => failed\n", ver, word);
+		printf("%s:\t%s => failed\n", ver, phrase);
 	}
 }
 
-void run_tests()
+void Test::Run()
 {
-	TestCase cases[11] = {
+	bool a_failed = false;
+	bool b_failed = false;
+	bool c_failed = false;
 
+	for (TestCase tc : cases) {
+		char *phrase = tc.phrase;
+		bool should_pass = tc.should_pass;
+
+		bool passes_a = is_pangram_a(phrase);
+		bool passes_b = is_pangram_b(phrase);
+		bool passes_c = is_pangram_c(phrase);
+
+		if (passes_a != should_pass) {
+			a_failed = true;
+		}
+		if (passes_b != should_pass) {
+			b_failed = true;
+		}
+		if (passes_c != should_pass) {
+			c_failed = true;
+		}
+
+		printf("----------------------\n");
+		this->PrintResult("a", phrase, passes_a, should_pass);
+		this->PrintResult("b", phrase, passes_b, should_pass);
+		this->PrintResult("c", phrase, passes_c, should_pass);
+	}
+
+	printf("---------------------\n");
+	printf("	  RESULTS\n");
+	printf("---------------------\n");
+	printf(" Solution A: %s\n", a_failed == true ? "failed" : "passed");
+	printf(" Solution B: %s\n", b_failed == true ? "failed" : "passed");
+	printf(" Solution C: %s\n", c_failed == true ? "failed" : "passed");
+	printf("---------------------\n");
+}
+
+int main(void)
+{
+	Test t(std::vector<TestCase>({
 		/* true cases */
 		TestCase("Two driven jocks help fax my big quiz", true),
 		TestCase("Pack my box with five dozen liquor jugs", true),
@@ -146,49 +198,7 @@ void run_tests()
 		TestCase("C is quirky, flawed, and an enormous success", false),
 		TestCase("When in doubt, use brute force.", false),
 		TestCase("", false),
-	};
-
-	bool a_failed = false;
-	bool b_failed = false;
-	bool c_failed = false;
-
-	int size = sizeof(cases) / sizeof(cases[0]);
-	for (int i = 0; i < size; i++) {
-		TestCase tc = cases[i];
-		char *word = tc.word;
-		bool should_pass = tc.should_pass;
-
-		bool passes_a = is_pangram_a(word);
-		bool passes_b = is_pangram_b(word);
-		bool passes_c = is_pangram_c(word);
-
-		if (passes_a != should_pass) {
-			a_failed = true;
-		}
-		if (passes_b != should_pass) {
-			b_failed = true;
-		}
-		if (passes_c != should_pass) {
-			c_failed = true;
-		}
-
-		printf("----------------------\n");
-		print_result("a", word, passes_a, should_pass);
-		print_result("b", word, passes_b, should_pass);
-		print_result("c", word, passes_c, should_pass);
-	}
-
-	printf("---------------------\n");
-	printf("      RESULTS\n");
-	printf("---------------------\n");
-	printf(" Solution A: %s\n", a_failed == true ? "failed" : "passed");
-	printf(" Solution B: %s\n", b_failed == true ? "failed" : "passed");
-	printf(" Solution C: %s\n", c_failed == true ? "failed" : "passed");
-	printf("---------------------\n");
-}
-
-int main(void)
-{
-	run_tests();
+	}));
+	t.Run();
 	return 0;
 }
