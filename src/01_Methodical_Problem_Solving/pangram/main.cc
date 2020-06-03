@@ -30,7 +30,7 @@ bool is_alphabetic(char c);
 bool is_pangram_a(char *phrase)
 {
 	const char *alphabet = "abcdefghijklmnopqrstuvwxyz";
-	for (int i = 0; i < sizeof(alphabet); i++) {
+	for (int i = 0; i < strlen(alphabet); i++) {
 		if (!contains(phrase, alphabet[i])) {
 			return false;
 		}
@@ -63,10 +63,7 @@ bool is_pangram_b(char *phrase)
 			distinct_alpha[alpha_index] = ch;
 		}
 	}
-	if (strlen(distinct_alpha) == 26) {
-		return true;
-	}
-	return false;
+	return strlen(distinct_alpha) == 26;
 }
 
 /*
