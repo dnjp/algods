@@ -21,10 +21,7 @@ type IStack interface {
 	Size() int
 }
 
-/*
-Stack is a LIFO data structure where addition additions and removals
-occur at the top of the stack.
-*/
+// Stack is a LIFO data structure where additions and removals occur at the top of the stack
 type Stack struct {
 	items []interface{}
 }

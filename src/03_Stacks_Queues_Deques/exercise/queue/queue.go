@@ -26,7 +26,7 @@ type IQueue interface {
 Queue uses two underlying stacks in order to implement the queue interface. This implementation
 moves items from the primary stack to the cache during insertion, and then re-adds old items after
 inserting the new item in order to place the new item at the rear of the stack. This makes the cost
-of additions O(n), while removals are O(1) because the item can simply be popped of the front of
+of additions O(n), while removals are O(1) because the item can simply be popped off the front of
 the primary stack.
 */
 type Queue struct {
