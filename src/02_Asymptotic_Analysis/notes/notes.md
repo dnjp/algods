@@ -93,3 +93,154 @@ func bigFunc(n int) {
 Putting these all together: T(n) = 3 + 3n^2 + 2n + 1 = 3n^2 + 2n + 4. By looking
 at the exponents, we can see that the n^2 term will be dominant, so this
 function is O(n^2).
+
+# ADM
+## Demonstrating Incorrectness
+
+The best way to prove that an algorithm is incorrect is to produce an instance in which yields incorrect answers. Good counter-examples have two important properties:
+1. Verifiability - You must be able to (1) calculate what answer your algorithm will give in this instance, and (2) display a better answer so as to prove the algorithm didn't find it.
+2. Simplicity - good counter-examples have all unnecessary details boiled away. They make clear exactly why the proposed algorithm fails.
+
+Here are techniques to help identify counter examples:
+1. Think small
+  - Great algorists look carefully at several small examples, because they are easier to verify and reason about
+2. Think exhaustively
+  - There are only a small number of possibilities for the smallest nontrivial value of n. 
+3. Hunt for the weakness
+  - If an algorithm is of the form "always take the biggest" think about why that might prove to be the wrong thing to do
+4. Go for a tie
+  - A good way to break a heuristic is to provide instances where everything is the same size.
+5. Seek extremes
+  - Many counter-examples are mixtures of huge ang tiny. It is usually easier to verify or reason about extreme examples than more muddled ones.
+
+## Summations
+
+Recognizing two basic classes of summation formulae will get you a long way in algorithm analysis.
+
+- Arithmetic progressions
+
+TODO complete reading
+
+## Big-O Notation
+
+The formal definitions associated with Big-O notation are:
+
+- f(n) = O(g(n)) means c * g(n) is an upper bound on f(n). Thus there exists some constant c such that f(n) is always <= c * g(n), for large enough n (i.e., n >= n₀).
+
+- f(n) = Ω(g(n)) means c * g(n) is a lower bound on f(n). Thus there exists some constant c such that f(n) is always >= c * g(n), for all n >= n₀.
+
+- f(n) = θ(g(n)) means c₁ * g(n) is an upper bound on f(n) and c₂ * g(n) is a lower bound on f(n), for all n >= n₀. thus there exist constants c₁ and c₂ such that f(n) <= c₁ * g(n) and f(n) >= c₂ * g(n). This means that g(n) provides a nice, tight bound on f(n).
+
+![](fig_2-3.png)
+
+# Examples
+
+- O(1)
+```c
+void printFirstElementOfArray(int arr[])
+{
+    printf("First element of array = %d",arr[0]);
+}
+
+```
+
+- O(n)
+```c
+void printAllElementOfArray(int arr[], int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        printf("%d\n", arr[i]);
+    }
+}
+```
+
+- O(n²) Example
+```c
+void printAllPossibleOrderedPairs(int arr[], int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            printf("%d = %d\n", arr[i], arr[j]);
+        }
+     }
+}
+```
+
+- O(2ⁿ) Example
+```c
+int fibonacci(int num)
+{
+    if (num <= 1) return num;
+    return fibonacci(num - 2) + fibonacci(num - 1);
+}
+```
+
+- O(n!) example:
+```c
+void nFacRuntimeFunc(int n) {
+  for(int i=0; i<n; i++) {
+    nFacRuntimeFunc(n-1);
+  }
+}
+```
+
+- O(log n) example:
+```c
+int nlogn(int x) {
+  while (x > 0) {  
+    x /= 2;  
+  }  
+  return x;
+}
+```
+
+- O(n log n)
+
+```cpp
+void mergeSort(vector<int>& vectorToSort)
+{
+    // BASE CASE: arrays with fewer than 2 elements are sorted
+    if (vectorToSort.size() < 2) {
+        return;
+    }
+
+    // STEP 1: divide the array in half
+    // we use integer division, so we'll never get a "half index"
+    size_t midIndex = vectorToSort.size() / 2;
+
+    vector<int> left(vectorToSort.begin(), vectorToSort.begin() + midIndex);
+    vector<int> right(vectorToSort.begin() + midIndex, vectorToSort.end());
+
+    // STEP 2: sort each half
+    mergeSort(left);
+    mergeSort(right);
+
+    // STEP 3: merge the sorted halves
+    size_t currentLeftIndex  = 0;
+    size_t currentRightIndex = 0;
+
+    for (size_t currentSortedIndex = 0; currentSortedIndex < vectorToSort.size();
+            ++currentSortedIndex) {
+
+        // sortedLeft's first element comes next
+        // if it's less than sortedRight's first
+        // element or if sortedRight is exhausted
+        if (currentLeftIndex < left.size()
+                && (currentRightIndex >= right.size()
+                || left[currentLeftIndex] < right[currentRightIndex])) {
+            vectorToSort[currentSortedIndex] = left[currentLeftIndex];
+            ++currentLeftIndex;
+        }
+        else {
+            vectorToSort[currentSortedIndex] = right[currentRightIndex];
+            ++currentRightIndex;
+        }
+    }
+}
+```
+
+# Class
+
