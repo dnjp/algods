@@ -1,4 +1,4 @@
-package reverse_list
+package reverselist
 
 import (
 	"testing"

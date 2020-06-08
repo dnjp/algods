@@ -1,45 +1,45 @@
 package stack
 
-import (
-	"fmt"
-)
-
+// IStack is the interface for a stack
 type IStack interface {
-	// Creates a new, empty stack
+	// New creates a new, empty stack
 	New() *IStack
 
-	// Adds given item to top of stack
+	// Push adds given item to top of stack
 	Push(interface{})
 
-	// Removes and returns the top item from the stack
+	// Pop removes and returns the top item from the stack
 	Pop() *interface{}
 
-	// Returns the top item from the stack but doesn't remove it
+	// Peek returns the top item from the stack but doesn't remove it
 	Peek() *interface{}
 
-	// Returns whether the stack is empty
+	// IsEmpty returns whether the stack is empty
 	IsEmpty() bool
 
-	// Returns the number of items on the stack
+	// Size returns the number of items on the stack
 	Size() int
 }
 
+/*
+Stack is a LIFO data structure where addition additions and removals
+occur at the top of the stack.
+*/
 type Stack struct {
 	items []interface{}
 }
 
+// New creates a new, empty stack
 func New() *Stack {
 	return &Stack{}
 }
 
-func (s *Stack) IsEmpty() bool {
-	return len(s.items) == 0
-}
-
+// Push adds given item to top of stack
 func (s *Stack) Push(item interface{}) {
 	s.items = append(s.items, item)
 }
 
+// Pop removes and returns the top item from the stack
 func (s *Stack) Pop() *interface{} {
 	length := len(s.items)
 	if length > 0 {
@@ -50,6 +50,7 @@ func (s *Stack) Pop() *interface{} {
 	return nil
 }
 
+// Peek returns the top item from the stack but doesn't remove it
 func (s *Stack) Peek() *interface{} {
 	length := len(s.items)
 	if length > 0 {
@@ -59,10 +60,12 @@ func (s *Stack) Peek() *interface{} {
 	return nil
 }
 
-func (s *Stack) Size() int {
-	return len(s.items)
+// IsEmpty returns whether the stack is empty
+func (s *Stack) IsEmpty() bool {
+	return len(s.items) == 0
 }
 
-func (s *Stack) Print() {
-	fmt.Printf("contents: %+v\n", s.items)
+// Size returns the number of items on the stack
+func (s *Stack) Size() int {
+	return len(s.items)
 }
