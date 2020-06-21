@@ -6,8 +6,6 @@ import (
 
 // IQueue is the interface for a queue
 type IQueue interface {
-	// New constructs a new Queue
-	New() *IQueue
 
 	// Enqueue adds a new item to the rear of the queue
 	Enqueue(interface{})

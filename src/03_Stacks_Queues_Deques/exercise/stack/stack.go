@@ -2,8 +2,6 @@ package stack
 
 // IStack is the interface for a stack
 type IStack interface {
-	// New creates a new, empty stack
-	New() *IStack
 
 	// Push adds given item to top of stack
 	Push(interface{})
