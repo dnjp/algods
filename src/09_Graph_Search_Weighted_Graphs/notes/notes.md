@@ -81,6 +81,16 @@ paths that seem to be leading closer to a goal.
 Continue reading
 [this](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
 
+Which algorithm should you use for sinding paths?
+
+- If you want to find paths from or to _all_ locations, use Breadth First Search
+  or Dijkstra's Algorithm. Use BFS if movement costs are all the same; use
+  Dijkstra's Algorithm if movement costs vary.
+- If you want to find paths to _one_ location, or the closest of several goals,
+  use Greedy Best First Search or A* - prefer A* in most cases. When you're
+  tempted to use greedy best first search, consider usind A\* with an
+  ["inadmissible" heuristic](https://en.wikipedia.org/wiki/Admissible_heuristic).
+
 ## Practice
 
 - [Network Delay Time](https://leetcode.com/problems/network-delay-time/description/)
