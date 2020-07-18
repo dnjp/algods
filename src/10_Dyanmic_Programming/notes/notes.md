@@ -161,3 +161,13 @@ int numPathsDP(int h, int w)
 Both the time and space cost for this implementation are O(HxW), compared to the
 O(2^(H+W)) time and O(H+W) space previously, making a big time difference as H
 and W increase.
+
+## FAST Method
+
+The FAST method is a repeatable process that you can follow every time to find an optimal solution to any dynamic programming problem.
+
+It is comprised of 4 steps:
+1. Find the recursive solution
+2. Analyze the solution
+3. Identify the subproblems
+4. Turn around the solution

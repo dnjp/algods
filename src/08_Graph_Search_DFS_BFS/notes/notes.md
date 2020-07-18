@@ -94,7 +94,8 @@ func NewNode(value string) *Node {
 func (n *node) insertLeft(child node) {
   if n.left == nil {
     n.left = &child
-  } else { // insert new node and push existing children down one level child.left =
+  } else { 
+    // insert new node and push existing children down one level
     child.left = n.left
     n.left = &child
   }

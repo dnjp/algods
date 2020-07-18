@@ -59,7 +59,7 @@ They do not need to be _adjacent_.
 - If `data[7] > data[16]`, that's an inversion.
 - Every time an inversion is required, we would also say that there is
   corresponding data movement. For example, the `Exchange` function requires 3
-  movements ot take place, which happens very quickly on most processors but
+  movements to take place, which happens very quickly on most processors but
   still
   amounts to a significant cost.
 - There can be at most `N * (N-1)/2` inversions in the array of length `N`. The
@@ -167,8 +167,7 @@ of comparisons are executed no matter how the data is ordered. This is exactly
 ## Insertion Sort
 
 Insertion Sort builds up a longer and longer sorted list from the bottom of the
-array. We repeatedly insert th next element into the sorted part of the array by
-sliding it down to its proper position using that `Exchange` function:
+array. We repeatedly insert the next element into the sorted part of the array by sliding it down to its proper position using that `Exchange` function:
 
 ```go
 func InsertionSort(data []int) []int {
@@ -396,7 +395,7 @@ func Quicksort(data []int) []int {
 
   // at least two elements
   if afterSmall < highI {
-    return Quicksort(data, afterSmall, highI
+    return Quicksort(data, afterSmall, highI)
   }
 
   return data
@@ -405,7 +404,7 @@ func Quicksort(data []int) []int {
 
 Sorting the array is accomplished by dealing with sections. It picks an
 arbitrary element as `pivot` and then swaps elements with values above and below
-the pivot until the part of the arra being processed is in three sections:
+the pivot until the part of the array being processed is in three sections:
 
 1. elements <= pivot
 2. possibly an element equal to pivot
