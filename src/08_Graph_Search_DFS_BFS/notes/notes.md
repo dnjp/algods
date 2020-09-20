@@ -284,7 +284,8 @@ Here's how this would work in Python:
       return operate(evaluate(tree['left']), evaluate(tree['right']))
     except KeyError:
       # no left or no right, so is a leaf - our base case
-      return tree['val'] ```
+      return tree['val'] 
+```
 
 ## Tree Traversals
 
