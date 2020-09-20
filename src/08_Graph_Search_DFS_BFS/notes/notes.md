@@ -277,7 +277,7 @@ def build_parse_tree(expression):
 
 Here's how this would work in Python:
 
-````python
+```python
   def evaluate(tree):
     try:
       operate = OPERATORS[tree['val']]
