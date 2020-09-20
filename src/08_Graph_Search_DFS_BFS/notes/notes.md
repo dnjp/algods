@@ -314,7 +314,7 @@ func preorder(n node) {
     preorder(*n.right)
   }
 }
-````
+```
 
 ### Postorder
 
